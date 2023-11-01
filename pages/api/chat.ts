@@ -15,7 +15,7 @@ export default async function handler(
   console.log('question', question);
   console.log('history', history);
 
-  //only accept post requests
+  // only accept post requests
   if (req.method !== 'POST') {
     res.status(405).json({ error: 'Method not allowed' });
     return;
@@ -32,11 +32,11 @@ export default async function handler(
 
     /* create vectorstore*/
     const vectorStore = await PineconeStore.fromExistingIndex(
-      new OpenAIEmbeddings({}),
+      new OpenAIEmbeddings(),
       {
         pineconeIndex: index,
         textKey: 'text',
-        namespace: PINECONE_NAME_SPACE, //namespace comes from your config folder
+        namespace: PINECONE_NAME_SPACE, // namespace comes from your config folder
       },
     );
 
@@ -54,10 +54,9 @@ export default async function handler(
     //Ask a question using chat history
     const response = await chain.call({
       question: sanitizedQuestion,
-      chat_history: pastMessages
+      chat_history: pastMessages,
     });
 
-    console.log('response', response);
     res.status(200).json(response);
   } catch (error: any) {
     console.log('error', error);
